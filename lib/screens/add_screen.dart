@@ -1,7 +1,14 @@
+import 'package:expense_tracker/models/expense_transaction.dart';
 import 'package:flutter/material.dart';
 
 class AddScreen extends StatefulWidget {
-  const AddScreen({super.key});
+
+  final Function(ExpenseTransaction) onAddTransaction;
+
+  const AddScreen({
+      super.key,
+      required this.onAddTransaction,
+    });
 
   @override
   State<AddScreen> createState() => _AddScreenState();
@@ -17,10 +24,22 @@ class _AddScreenState extends State<AddScreen> {
 
   void validateSave(){
     if (_formKey.currentState!.validate()) {
-    print(descriptionController.text);
-    print(amountController.text);
-    print(transactionType);
-  }
+      print(descriptionController.text);
+      print(amountController.text);
+      print(transactionType);
+
+      if (_formKey.currentState!.validate()) {
+
+        ExpenseTransaction transaction = ExpenseTransaction(
+          description: descriptionController.text,
+          amount: double.parse(amountController.text),
+          isIncome: transactionType == "Income",
+        );
+
+        widget.onAddTransaction(transaction);
+      }
+    }
+
   }
 
   @override
