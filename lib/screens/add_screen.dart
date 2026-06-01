@@ -1,6 +1,7 @@
 import 'package:expense_tracker/models/expense_transaction.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import './../database/database_helper.dart';
 
 class AddScreen extends StatefulWidget {
 
@@ -35,26 +36,45 @@ class _AddScreenState extends State<AddScreen> {
     "Other",
   ];
 
-  void validateSave(){
+  Future<void> validateSave() async {
     if (_formKey.currentState!.validate()) {
-      print(descriptionController.text);
-      print(amountController.text);
-      print(transactionType);
 
-      if (_formKey.currentState!.validate()) {
+      ExpenseTransaction transaction = ExpenseTransaction(
+        description: descriptionController.text,
+        amount: double.parse(amountController.text),
+        isIncome: transactionType == "Income",
+        category: selectedCategory,
+        date: selectedDate,
+      );
 
-        ExpenseTransaction transaction = ExpenseTransaction(
-          description: descriptionController.text,
-          amount: double.parse(amountController.text),
-          isIncome: transactionType == "Income",
-          category: selectedCategory,
-          date: selectedDate,
-        );
+      widget.onAddTransaction(transaction);
+      // await DatabaseHelper.instance.insertTransaction(transaction);
 
-        widget.onAddTransaction(transaction);
-      }
+      // show message saved
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Transaction saved successfully"),
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      // clean form
+      descriptionController.clear();
+      amountController.clear();
+
+      setState(() {
+        transactionType = "Expense";
+        selectedCategory = "Food";
+        selectedDate = DateTime.now();
+      });
     }
+  }
 
+  @override
+  void dispose() {
+    descriptionController.dispose();
+    amountController.dispose();
+    super.dispose();
   }
 
   @override
@@ -175,7 +195,10 @@ class _AddScreenState extends State<AddScreen> {
             const SizedBox(height: 20),
 
             ElevatedButton(
-              onPressed: validateSave, 
+              // onPressed: validateSave, 
+              onPressed: () async {
+                await validateSave();
+              }, 
               child: const Text("Save")
             ),
           ],
