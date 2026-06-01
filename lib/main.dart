@@ -39,6 +39,12 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  void deleteTransaction(int index) {
+    setState(() {
+      transactions.removeAt(index);
+    });
+  }
+
   // @override
   // void initState() {
   //   super.initState();
@@ -58,6 +64,7 @@ class _MainScreenState extends State<MainScreen> {
     final pages = [
       HomeScreen(
         transactions: transactions,
+        onDeleteTransaction: deleteTransaction,
       ),
       AddScreen(
         onAddTransaction: addTransaction,

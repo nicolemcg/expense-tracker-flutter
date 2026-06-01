@@ -59,21 +59,21 @@ class ReportScreen extends StatelessWidget {
                   ListTile(
                     title: const Text("Total Income"),
                     trailing: Text(
-                      "\$${totalIncome.toStringAsFixed(2)}",
+                      "${totalIncome.toStringAsFixed(2)}",
                     ),
                   ),
 
                   ListTile(
                     title: const Text("Total Expenses"),
                     trailing: Text(
-                      "\$${totalExpenses.toStringAsFixed(2)}",
+                      "${totalExpenses.toStringAsFixed(2)}",
                     ),
                   ),
 
                   ListTile(
                     title: const Text("Balance"),
                     trailing: Text(
-                      "\$${balance.toStringAsFixed(2)}",
+                      "${balance.toStringAsFixed(2)}",
                     ),
                   ),
                 ],
@@ -107,7 +107,7 @@ class ReportScreen extends StatelessWidget {
                         child: ListTile(
                           title: Text(entry.key),
                           trailing: Text(
-                            "\$${entry.value.toStringAsFixed(2)}",
+                            "${entry.value.toStringAsFixed(2)}",
                           ),
                         ),
                       );

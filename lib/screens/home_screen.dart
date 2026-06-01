@@ -4,11 +4,42 @@ import './../models/expense_transaction.dart';
 class HomeScreen extends StatelessWidget {
 
   final List<ExpenseTransaction> transactions;
+  final Function(int) onDeleteTransaction;
 
   const HomeScreen({
     super.key,
     required this.transactions,
+    required this.onDeleteTransaction,
   });
+
+  void showDeleteDialog(BuildContext context, int index) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Delete Transaction"),
+          content: const Text(
+            "Are you sure you want to delete this transaction?",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                onDeleteTransaction(index);
+                Navigator.pop(context);
+              },
+              child: const Text("Delete"),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +71,7 @@ class HomeScreen extends StatelessWidget {
               ),
 
               Text(
-                "\$${balance.toStringAsFixed(2)}",
+                "${balance.toStringAsFixed(2)}",
                 style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -56,7 +87,7 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       const Text("Income"),
                       Text(
-                        "\$${totalIncome.toStringAsFixed(2)}",
+                        "${totalIncome.toStringAsFixed(2)}",
                       ),
                     ],
                   ),
@@ -64,7 +95,7 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       const Text("Expenses"),
                       Text(
-                        "\$${totalExpenses.toStringAsFixed(2)}",
+                        "${totalExpenses.toStringAsFixed(2)}",
                       ),
                     ],
                   ),
@@ -91,9 +122,21 @@ class HomeScreen extends StatelessWidget {
                   "${transaction.date.day}/${transaction.date.month}/${transaction.date.year}",
                 ),
 
-                trailing: Text(
-                  transaction.isIncome ?
-                  "+${transaction.amount}" : "-${transaction.amount}",
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+
+                    Text(
+                      transaction.isIncome
+                          ? "+${transaction.amount}"
+                          : "-${transaction.amount}",
+                    ),
+
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () => showDeleteDialog(context, index),
+                    ),
+                  ],
                 ),
               );
             },
