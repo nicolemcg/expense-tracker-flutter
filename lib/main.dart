@@ -1,3 +1,4 @@
+import 'package:expense_tracker/database/database_helper.dart';
 import 'package:expense_tracker/models/expense_transaction.dart';
 import 'package:expense_tracker/screens/add_screen.dart';
 import 'package:expense_tracker/screens/home_screen.dart';
@@ -38,6 +39,19 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   loadTransactions();
+  // }
+  // Future<void> loadTransactions() async {
+  //   final data = await DatabaseHelper.instance.getTransactions();
+
+  //   setState(() {
+  //     transactions = data;
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     
@@ -48,7 +62,9 @@ class _MainScreenState extends State<MainScreen> {
       AddScreen(
         onAddTransaction: addTransaction,
       ),
-      const ReportScreen(),
+      ReportScreen(
+        transactions: transactions,
+      ),
     ];
 
     return Scaffold(
