@@ -1,4 +1,5 @@
 import 'package:expense_tracker/models/expense_transaction.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class AddScreen extends StatefulWidget {
@@ -21,6 +22,18 @@ class _AddScreenState extends State<AddScreen> {
   final TextEditingController amountController = TextEditingController();
 
   String transactionType = "Expense";
+  String selectedCategory = "Food";
+  DateTime selectedDate = DateTime.now();
+
+  final List<String> categories = [
+    "Food",
+    "Transport",
+    "Health",
+    "Entertainment",
+    "Shopping",
+    "Salary",
+    "Other",
+  ];
 
   void validateSave(){
     if (_formKey.currentState!.validate()) {
@@ -34,6 +47,8 @@ class _AddScreenState extends State<AddScreen> {
           description: descriptionController.text,
           amount: double.parse(amountController.text),
           isIncome: transactionType == "Income",
+          category: selectedCategory,
+          date: selectedDate,
         );
 
         widget.onAddTransaction(transaction);
@@ -50,6 +65,28 @@ class _AddScreenState extends State<AddScreen> {
         key: _formKey,
         child: Column(
           children: [
+
+            DropdownButtonFormField<String>(
+              value: selectedCategory, 
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Category",
+              ),
+              items: categories.map((category){
+                return DropdownMenuItem(
+                  value: category,
+                  child: Text(category)
+                );
+              }).toList(),
+              onChanged: (value){
+                setState(() {
+                  selectedCategory = value!;
+                });
+              }
+            ),
+
+            const SizedBox(height: 16),
+
             TextFormField(
               controller: descriptionController,
               decoration: const InputDecoration(
@@ -107,12 +144,40 @@ class _AddScreenState extends State<AddScreen> {
               ),
             ),
 
+            const SizedBox(height: 16),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text(
+                  "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: selectedDate,
+                      firstDate: DateTime(2020),
+                      lastDate: DateTime(2100),
+                    );
+
+                    if(pickedDate != null){
+                      setState(() {
+                        selectedDate = pickedDate;
+                      });
+                    }
+                  }, 
+                  child: const Text("Select Date"),
+                ),
+              ],
+            ),
+
             const SizedBox(height: 20),
 
             ElevatedButton(
               onPressed: validateSave, 
               child: const Text("Save")
-            )
+            ),
           ],
         ),
       )

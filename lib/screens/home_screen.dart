@@ -86,13 +86,14 @@ class HomeScreen extends StatelessWidget {
                 title: Text(transaction.description),
 
                 subtitle: Text(
-                  transaction.isIncome
-                    ? "Income"
-                    : "Expense",
+                  "${transaction.category} • "
+                  "${transaction.isIncome ? 'Income' : 'Expense'} • "
+                  "${transaction.date.day}/${transaction.date.month}/${transaction.date.year}",
                 ),
 
                 trailing: Text(
-                  "\$${transaction.amount}",
+                  transaction.isIncome ?
+                  "+${transaction.amount}" : "-${transaction.amount}",
                 ),
               );
             },
